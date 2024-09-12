@@ -181,7 +181,7 @@ func (e *Entry) CreateRenderer() fyne.WidgetRenderer {
 	border.StrokeWidth = th.Size(theme.SizeNameInputBorder)
 	border.StrokeColor = th.Color(theme.ColorNameInputBorder, v)
 	border.CornerRadius = th.Size(theme.SizeNameInputRadius)
-	cursor := canvas.NewRectangle(color.Transparent)
+	cursor := canvas.NewRectangle(color.Black)
 	cursor.Hide()
 
 	e.cursorAnim = newEntryCursorAnimation(cursor)

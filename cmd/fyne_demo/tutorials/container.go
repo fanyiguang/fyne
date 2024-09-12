@@ -83,8 +83,10 @@ func makeCenterLayout(_ fyne.Window) fyne.CanvasObject {
 }
 
 func makeDocTabsTab(_ fyne.Window) fyne.CanvasObject {
+	entry := widget.NewMultiLineEntry()
+	entry.Text = "Content of document 1"
 	tabs := container.NewDocTabs(
-		container.NewTabItem("Doc 1", widget.NewLabel("Content of document 1")),
+		container.NewTabItem("Doc 1", entry),
 		container.NewTabItem("Doc 2 bigger", widget.NewLabel("Content of document 2")),
 		container.NewTabItem("Doc 3", widget.NewLabel("Content of document 3")),
 	)
