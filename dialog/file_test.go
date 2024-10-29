@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	intWidget "fyne.io/fyne/v2/internal/widget"
 	"github.com/stretchr/testify/assert"
 
 	"fyne.io/fyne/v2"
@@ -337,6 +338,10 @@ func TestShowFileSave(t *testing.T) {
 	assert.Equal(t, "(Parent)", item.name)
 	assert.True(t, save.Disabled())
 
+	abs, _ := filepath.Abs("./testdata/")
+	dir, _ := storage.ListerForURI(storage.NewFileURI(abs))
+	saver.SetLocation(dir)
+
 	var target *fileDialogItem
 	id := -1
 	for i, icon := range objects {
@@ -353,9 +358,6 @@ func TestShowFileSave(t *testing.T) {
 		return
 	}
 
-	abs, _ := filepath.Abs("./testdata/")
-	dir, _ := storage.ListerForURI(storage.NewFileURI(abs))
-	saver.SetLocation(dir)
 	saver.dialog.files.(*widget.GridWrap).Select(id)
 	assert.Equal(t, target.location.Name(), nameEntry.Text)
 	assert.False(t, save.Disabled())
@@ -689,11 +691,9 @@ func TestSetFileNameBeforeShow(t *testing.T) {
 	dOpen.Show()
 
 	assert.NotEqual(t, "testfile.zip", dOpen.dialog.fileName.(*widget.Label).Text)
-
 }
 
 func TestSetFileNameAfterShow(t *testing.T) {
-
 	win := test.NewTempWindow(t, widget.NewLabel("Content"))
 	dSave := NewFileSave(func(fyne.URIWriteCloser, error) {}, win)
 	dSave.Show()
@@ -707,7 +707,25 @@ func TestSetFileNameAfterShow(t *testing.T) {
 	dOpen.SetFileName("testfile.zip")
 
 	assert.NotEqual(t, "testfile.zip", dOpen.dialog.fileName.(*widget.Label).Text)
+}
 
+func TestTapParent_GoesUpOne(t *testing.T) {
+	win := test.NewTempWindow(t, widget.NewLabel("Content"))
+	d := NewFileOpen(func(fyne.URIReadCloser, error) {}, win)
+	home, _ := os.UserHomeDir()
+	homeURI, _ := storage.ListerForURI(storage.NewFileURI(home))
+	parentURI, _ := storage.Parent(homeURI)
+
+	d.SetView(GridView)
+	d.SetLocation(homeURI)
+	d.Show()
+
+	items := test.WidgetRenderer(d.dialog.files)
+	item := items.Objects()[0].(*intWidget.Scroll).Content.(*fyne.Container).Objects[0]
+	parent := test.WidgetRenderer(item.(fyne.Widget)).Objects()[1].(*fileDialogItem)
+	test.Tap(parent)
+
+	assert.Equal(t, d.dialog.dir.String(), parentURI.String())
 }
 
 func TestCreateNewFolderInDir(t *testing.T) {

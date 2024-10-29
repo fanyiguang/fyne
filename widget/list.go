@@ -168,7 +168,7 @@ func (l *List) scrollTo(id ListItemID) {
 	separatorThickness := l.Theme().Size(theme.SizeNamePadding)
 	y := float32(0)
 	lastItemHeight := l.itemMin.Height
-	if l.itemHeights == nil || len(l.itemHeights) == 0 {
+	if len(l.itemHeights) == 0 {
 		y = (float32(id) * l.itemMin.Height) + (float32(id) * separatorThickness)
 	} else {
 		for i := 0; i < id; i++ {
@@ -198,7 +198,7 @@ func (l *List) Resize(s fyne.Size) {
 	}
 
 	l.offsetUpdated(l.scroller.Offset)
-	l.scroller.Content.(*fyne.Container).Layout.(*listLayout).updateList(false)
+	l.scroller.Content.(*fyne.Container).Layout.(*listLayout).updateList(true)
 }
 
 // Select add the item identified by the given ID to the selection.
@@ -367,7 +367,7 @@ func (l *List) contentMinSize() fyne.Size {
 	}
 	items := l.Length()
 
-	if l.itemHeights == nil || len(l.itemHeights) == 0 {
+	if len(l.itemHeights) == 0 {
 		return fyne.NewSize(l.itemMin.Width,
 			(l.itemMin.Height+separatorThickness)*float32(items)-separatorThickness)
 	}

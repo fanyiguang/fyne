@@ -12,6 +12,7 @@ import (
 	"syscall"
 
 	"fyne.io/fyne/v2"
+	internalapp "fyne.io/fyne/v2/internal/app"
 )
 
 const notificationTemplate = `$title = "%s"
@@ -94,6 +95,7 @@ func runScript(name, script string) {
 		fyne.LogError("Failed to launch windows notify script", err)
 	}
 }
-func watchTheme() {
-	// TODO monitor the Windows theme
+
+func watchTheme(s *settings) {
+	go internalapp.WatchTheme(s.setupTheme)
 }
