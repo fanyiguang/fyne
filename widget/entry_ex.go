@@ -1,9 +1,10 @@
 package widget
 
 import (
+	"runtime"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/driver/desktop"
-	"runtime"
 )
 
 type EntryEx struct {
@@ -30,16 +31,8 @@ func NewMultiLineEntryEx(rightFn, leftFn, createItemFn func(), fcFn func(string)
 
 // ExtendBaseWidget is used by an extending widget to make use of BaseWidget functionality.
 func (e *EntryEx) ExtendBaseWidget(wid fyne.Widget) {
-	impl := e.super()
-	if impl != nil {
-		return
-	}
-
-	e.impl.Store(&wid)
-
-	e.propertyLock.Lock()
+	e.BaseWidget.ExtendBaseWidget(wid)
 	e.registerShortcut()
-	e.propertyLock.Unlock()
 }
 
 func (e *EntryEx) registerShortcut() {
